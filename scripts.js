@@ -39,30 +39,7 @@ async (e) => {
                 })
             }
         );
-function sortearParticipante() {
 
-  const PLANILHA_ID = "1DkPdMoqi4Ha8vanhPumwIzlMYhXz74D9_urygOcnj3k";
-  const planilha = SpreadsheetApp.openById(PLANILHA_ID);
-  const aba = planilha.getSheetByName("Página1");
-
-  const dados = aba.getDataRange().getValues();
-  const participantes = dados.slice(1);
-
-  if (participantes.length === 0) {
-    return resposta({ sucesso: false, erro: "Sem participantes" });
-  }
-
-  const sorteado = participantes[Math.floor(Math.random() * participantes.length)];
-
-  return resposta({
-    sucesso: true,
-    vencedor: {
-      nome: sorteado[0],
-      dataNascimento: sorteado[1],
-      celular: sorteado[2]
-    }
-  });
-}
         const resultado =
 await resposta.json();
 
