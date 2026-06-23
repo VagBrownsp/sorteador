@@ -41,20 +41,25 @@ async (e) => {
         );
 
         const resultado =
-        await resposta.json();
+await resposta.json();
 
-        if(resultado.sucesso){
+console.log(resultado);
 
-            mensagem.innerHTML =
-            "✅ Participação registrada com sucesso!";
+if(resultado.sucesso){
 
-            form.reset();
+    mensagem.innerHTML =
+    "✅ Participação registrada com sucesso!";
 
-        } else {
+    form.reset();
 
-            mensagem.innerHTML =
-            "❌ Erro ao salvar inscrição.";
-        }
+} else {
+
+    mensagem.innerHTML =
+    "❌ Erro ao salvar inscrição: " +
+    resultado.erro;
+
+    console.error(resultado.erro);
+}
 
     } catch(error){
 
