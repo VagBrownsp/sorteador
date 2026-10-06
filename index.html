@@ -9,40 +9,37 @@
 <body>
     <div class="container">
         <h1>🎁 Sorteio Vale Financeira</h1>
-        <form id="formFicha">
-            <label>Nome Completo *</label>
-            <input type="text" id="nome" required>
 
-            <label>Data de Nascimento *</label>
+        <form id="formFicha">
+            <label for="nome">Nome Completo *</label>
+            <input type="text" id="nome" autocomplete="name" required>
+
+            <label for="cargo">Cargo *</label>
             <input
                 type="text"
-                id="dataNascimento"
-                inputmode="numeric"
-                pattern="[0-9/]*"
-                maxlength="10"
-                placeholder="DD/MM/AAAA"
-                autocomplete="bday"
+                id="cargo"
+                placeholder="Ex.: Analista, Gerente..."
+                autocomplete="organization-title"
                 required>
 
-            <label>Celular *</label>
+            <label for="celular">Celular *</label>
             <input
                 type="text"
                 id="celular"
                 inputmode="numeric"
                 maxlength="15"
                 placeholder="(12) 99999-9999"
+                autocomplete="tel"
                 required>
 
-            <button type="submit">
-                Participar do Sorteio
-            </button>
-            <button id="sortearBtn" type="button">
-                Sortear vencedor 🎲
-            </button>
+            <button type="submit">Participar do Sorteio</button>
+            <button id="sortearBtn" type="button">Sortear vencedor 🎲</button>
             <div id="resultadoSorteio"></div>
         </form>
+
         <div id="mensagem"></div>
     </div>
+
     <script src="scripts.js"></script>
 </body>
-                </html>
+</html>
