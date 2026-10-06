@@ -1,114 +1,63 @@
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzshhdl4ryLqs5TwhKtKz07a4ateWX9uTPhuXTtLx0Yw7mlajmuJZkJUY_k-LE2Rwbf/exec";
-const form =
-document.getElementById("formFicha");
-const mensagem =
-document.getElementById("mensagem");
+    "https://script.google.com/macros/s/AKfycbzshhdl4ryLqs5TwhKtKz07a4ateWX9uTPhuXTtLx0Yw7mlajmuJZkJUY_k-LE2Rwbf/exec";
 
-form.addEventListener(
-"submit",
-async (e) => {
-    e.preventDefault();
-    const nome =
-    document.getElementById("nome").value.trim();
-    const dataNascimento =
-    document.getElementById("dataNascimento").value;
-    const celular =
-    document.getElementById("celular").value;
-    mensagem.innerHTML =
-    "⏳ Enviando...";
-    try {
-        const resposta =
-        await fetch(
-            SCRIPT_URL,
-            {
-                method: "POST",
-                body: JSON.stringify({
-                    nome,
-                    dataNascimento,
-                    celular
-                })
-            }
-        );
-        const resultado =
-await resposta.json();
-console.log(resultado);
-if(resultado.sucesso){
-    mensagem.innerHTML =
-    "✅ Participação registrada com sucesso!";
-    form.reset();
-} else {
-    mensagem.innerHTML =
-    "❌ Erro ao salvar inscrição: " +
-    resultado.erro;
-    console.error(resultado.erro);
-}
-    } catch(error){
-        mensagem.innerHTML =
-        "❌ Erro de conexão.";
-        console.error(error);
-    }
-}
-);
+const form = document.getElementById("formFicha");
+const mensagem = document.getElementById("mensagem");
+const campoCelular = document.getElementById("celular");
 
-document
-.getElementById("dataNascimento")
-.addEventListener(
-"input",
-(e)=>{
-    let value =
-    e.target.value;
-    value =
-    value.replace(/\D/g,"");
-    value =
-    value.slice(0,8);
-    if(value.length > 4){
-        value =
-        value.replace(
-            /^(\d{2})(\d{2})(\d{0,4}).*/,
-            "$1/$2/$3"
-        );
-    }else if(value.length > 2){
-        value =
-        value.replace(
-            /^(\d{2})(\d{0,2})/,
-            "$1/$2"
-        );
+// ---------- Máscara do celular ----------
+function formatarCelular(valor) {
+    const digitos = valor.replace(/\D/g, "").slice(0, 11);
+
+    if (digitos.length > 6) {
+        return digitos.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, "($1) $2-$3");
     }
-    e.target.value =
-    value;
+    if (digitos.length > 2) {
+        return digitos.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+    }
+    if (digitos.length > 0) {
+        return digitos.replace(/^(\d*)/, "($1");
+    }
+    return "";
+}
+
+campoCelular.addEventListener("input", (e) => {
+    e.target.value = formatarCelular(e.target.value);
 });
 
-document
-.getElementById("celular")
-.addEventListener(
-"input",
-(e)=>{
-    let value =
-    e.target.value;
-    value =
-    value.replace(/\D/g,"");
-    value =
-    value.slice(0,11);
-    if(value.length > 6){
-        value =
-        value.replace(
-            /^(\d{2})(\d{5})(\d{0,4}).*/,
-            "($1) $2-$3"
-        );
-    }else if(value.length > 2){
-        value =
-        value.replace(
-            /^(\d{2})(\d{0,5})/,
-            "($1) $2"
-        );
-    }else if(value.length > 0){
-        value =
-        value.replace(
-            /^(\d*)/,
-            "($1"
-        );
+// ---------- Envio do formulário ----------
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById("nome").value.trim();
+    const cargo = document.getElementById("cargo").value.trim();
+    const celular = campoCelular.value;
+
+    mensagem.textContent = "⏳ Enviando...";
+
+    try {
+        const resposta = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                nome,
+                // Mantém a chave "dataNascimento" para continuar gravando
+                // na mesma coluna da planilha (o valor agora é o cargo).
+                dataNascimento: cargo,
+                celular
+            })
+        });
+
+        const resultado = await resposta.json();
+
+        if (resultado.sucesso) {
+            mensagem.textContent = "✅ Participação registrada com sucesso!";
+            form.reset();
+        } else {
+            mensagem.textContent = "❌ Erro ao salvar inscrição: " + resultado.erro;
+            console.error(resultado.erro);
+        }
+    } catch (erro) {
+        mensagem.textContent = "❌ Erro de conexão.";
+        console.error(erro);
     }
-    e.target.value =
-    value;
 });
